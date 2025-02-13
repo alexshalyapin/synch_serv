@@ -32,6 +32,7 @@ t = float(0)
 i = int(0)
 t_f = [float(0)]
 file_background = 'D:\\pythonProject3\\venv\\111.jpg '
+Submit_button_text = 'ok'
 # Data storage for the second tab
 data_history = []
 
@@ -100,6 +101,7 @@ class TabbedTextInput(TextInput):
 
 class SimulationApp(App):
     def build(self):
+        global i
         self.tabs = TabbedPanel(do_default_tab=False)
 
         # First Tab: Input and Results
@@ -126,7 +128,8 @@ class SimulationApp(App):
         self.al_input.text = "45"
 
         # Submit button
-        self.submit_button = Button(text="Submit", size_hint=(0.2, 0.1), pos_hint={'x': 0.4, 'top': 0.8})
+        Submit_button_text = "Сек.расход не более   " + str(round(a_max * (M + m[i]) / C, 2)) +'\nрасход не более   ' + str(round(((M + m[i]) * 0.05), 0))
+        self.submit_button = Button(text=Submit_button_text, size_hint=(0.3, 0.1), pos_hint={'x': 0.34, 'top': 0.8})
         self.submit_button.bind(on_press=self.process_input)
 
         # Result label
