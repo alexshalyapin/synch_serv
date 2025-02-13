@@ -7,7 +7,10 @@ from kivy.uix.popup import Popup
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.image import Image
 from kivy.graphics import Color, Rectangle
+from kivy.core.window import Window
 import math
 
 # Global variables
@@ -28,7 +31,7 @@ dm = float(0)
 t = float(0)
 i = int(0)
 t_f = [float(0)]
-
+file_background = 'D:\\pythonProject3\\venv\\111.jpg '
 # Data storage for the second tab
 data_history = []
 
@@ -81,6 +84,10 @@ class TabbedTextInput(TextInput):
     def __init__(self, next_input=None, **kwargs):
         super().__init__(**kwargs)
         self.next_input = next_input
+        self.multiline = False  # Ensure single-line input
+        self.size_hint_y = None
+        self.height = 40  # Set height to fit one line
+        self.font_size = 24  # Adjust font size for better readability
 
     def keyboard_on_key_down(self, window, keycode, text, modifiers):
         # Handle Tab key press
@@ -97,12 +104,16 @@ class SimulationApp(App):
 
         # First Tab: Input and Results
         self.input_tab = TabbedPanelItem(text="Input")
-        self.input_layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
+        self.input_layout = RelativeLayout()  # Use RelativeLayout for overlaying widgets
+
+        # Add background image (fills the entire screen)
+        self.background = Image(source=file_background, allow_stretch=True, keep_ratio=False, size_hint=(1, 1))
+        self.input_layout.add_widget(self.background)
 
         # Input fields
-        self.dm_input = TabbedTextInput(hint_text="Enter dm", multiline=False)
-        self.t_input = TabbedTextInput(hint_text="Enter t", multiline=False)
-        self.al_input = TabbedTextInput(hint_text="Enter al", multiline=False)
+        self.dm_input = TabbedTextInput(hint_text="Enter dm", multiline=False, size_hint=(0.2, None), height=30, pos_hint={'x': 0.1, 'top': 0.9})
+        self.t_input = TabbedTextInput(hint_text="Enter t", multiline=False, size_hint=(0.2, None), height=30, pos_hint={'x': 0.4, 'top': 0.9})
+        self.al_input = TabbedTextInput(hint_text="Enter al", multiline=False, size_hint=(0.2, None), height=30, pos_hint={'x': 0.7, 'top': 0.9})
 
         # Set up tab order
         self.dm_input.next_input = self.t_input
@@ -110,18 +121,18 @@ class SimulationApp(App):
         self.al_input.next_input = self.dm_input  # Loop back to the first input
 
         # Set default values for the first step
-        self.dm_input.text = "0"
-        self.t_input.text = "0"
-        self.al_input.text = "0"
+        self.dm_input.text = "100"
+        self.t_input.text = "4"
+        self.al_input.text = "45"
 
         # Submit button
-        self.submit_button = Button(text="Submit", size_hint=(1, 0.2))
+        self.submit_button = Button(text="Submit", size_hint=(0.2, 0.1), pos_hint={'x': 0.4, 'top': 0.8})
         self.submit_button.bind(on_press=self.process_input)
 
         # Result label
-        self.result_label = Label(text="Results will be shown here", size_hint=(1, 0.6))
+        self.result_label = Label(text="Results will be shown here", size_hint=(0.8, 0.4), pos_hint={'x': 0.1, 'top': 0.7})
 
-        # Add widgets to input layout
+        # Add widgets to input layout (on top of the background image)
         self.input_layout.add_widget(self.dm_input)
         self.input_layout.add_widget(self.t_input)
         self.input_layout.add_widget(self.al_input)
