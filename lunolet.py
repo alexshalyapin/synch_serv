@@ -109,6 +109,11 @@ class SimulationApp(App):
         self.t_input.next_input = self.al_input
         self.al_input.next_input = self.dm_input  # Loop back to the first input
 
+        # Set default values for the first step
+        self.dm_input.text = "0"
+        self.t_input.text = "0"
+        self.al_input.text = "0"
+
         # Submit button
         self.submit_button = Button(text="Submit", size_hint=(1, 0.2))
         self.submit_button.bind(on_press=self.process_input)
@@ -204,10 +209,10 @@ class SimulationApp(App):
                 )
                 self.result_label.text = result_text
 
-                # Clear input fields
-                self.dm_input.text = ""
-                self.t_input.text = ""
-                self.al_input.text = ""
+                # Update input fields with values from the previous step
+                self.dm_input.text = str(dm)
+                self.t_input.text = str(t)
+                self.al_input.text = str(al * 180 / math.pi)  # Convert radians back to degrees
 
                 # Update history tab
                 self.update_history_tab()
